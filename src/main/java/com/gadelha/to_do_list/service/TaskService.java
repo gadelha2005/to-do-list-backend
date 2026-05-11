@@ -5,6 +5,7 @@ import com.gadelha.to_do_list.dto.response.TaskResponseDTO;
 import com.gadelha.to_do_list.exception.TaskNotFoundException;
 import com.gadelha.to_do_list.model.Task;
 import com.gadelha.to_do_list.model.User;
+import com.gadelha.to_do_list.model.enums.Priority;
 import com.gadelha.to_do_list.model.enums.TaskStatus;
 import com.gadelha.to_do_list.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class TaskService {
                 .title(dto.title())
                 .description(dto.description())
                 .status(dto.status() != null ? dto.status() : TaskStatus.PENDING)
+                .priority(dto.priority() != null ? dto.priority() : Priority.MEDIUM)
+                .dueDate(dto.dueDate())
                 .user(user)
                 .build();
 
@@ -48,9 +51,11 @@ public class TaskService {
         Task task = taskRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
-        if (dto.title() != null) task.setTitle(dto.title());
+        if (dto.title() != null)       task.setTitle(dto.title());
         if (dto.description() != null) task.setDescription(dto.description());
-        if (dto.status() != null) task.setStatus(dto.status());
+        if (dto.status() != null)      task.setStatus(dto.status());
+        if (dto.priority() != null)    task.setPriority(dto.priority());
+        if (dto.dueDate() != null)     task.setDueDate(dto.dueDate());
 
         return TaskResponseDTO.from(taskRepository.save(task));
     }

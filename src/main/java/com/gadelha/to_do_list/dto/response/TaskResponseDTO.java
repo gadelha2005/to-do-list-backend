@@ -1,8 +1,10 @@
 package com.gadelha.to_do_list.dto.response;
 
 import com.gadelha.to_do_list.model.Task;
+import com.gadelha.to_do_list.model.enums.Priority;
 import com.gadelha.to_do_list.model.enums.TaskStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record TaskResponseDTO(
@@ -10,6 +12,8 @@ public record TaskResponseDTO(
         String title,
         String description,
         TaskStatus status,
+        Priority priority,
+        LocalDate dueDate,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -19,6 +23,8 @@ public record TaskResponseDTO(
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
+                task.getPriority(),
+                task.getDueDate(),
                 task.getCreatedAt(),
                 task.getUpdatedAt()
         );

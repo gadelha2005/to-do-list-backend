@@ -5,6 +5,7 @@ import com.gadelha.to_do_list.dto.response.TaskResponseDTO;
 import com.gadelha.to_do_list.exception.TaskNotFoundException;
 import com.gadelha.to_do_list.model.Task;
 import com.gadelha.to_do_list.model.User;
+import com.gadelha.to_do_list.model.enums.Priority;
 import com.gadelha.to_do_list.model.enums.TaskStatus;
 import com.gadelha.to_do_list.repository.TaskRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -48,9 +49,9 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Deve criar tarefa com status PENDING quando status não informado")
-    void create_withoutStatus_defaultsPending() {
-        TaskRequestDTO dto = new TaskRequestDTO("Estudar JWT", null, null);
+    @DisplayName("Deve criar tarefa com status PENDING e prioridade MEDIUM quando não informados")
+    void create_withoutStatus_defaultsPendingAndMedium() {
+        TaskRequestDTO dto = new TaskRequestDTO("Estudar JWT", null, null, null, null);
         Task saved = mockTask();
 
         when(taskRepository.save(any(Task.class))).thenReturn(saved);
@@ -60,15 +61,16 @@ class TaskServiceTest {
         assertNotNull(result);
         assertEquals("Estudar JWT", result.title());
         assertEquals(TaskStatus.PENDING, result.status());
+        assertEquals(Priority.MEDIUM, result.priority());
         verify(taskRepository).save(any(Task.class));
     }
 
     @Test
-    @DisplayName("Deve criar tarefa com status informado no DTO")
+    @DisplayName("Deve criar tarefa com status e prioridade informados no DTO")
     void create_withStatus_usesProvidedStatus() {
-        TaskRequestDTO dto = new TaskRequestDTO("Estudar JWT", null, TaskStatus.IN_PROGRESS);
+        TaskRequestDTO dto = new TaskRequestDTO("Estudar JWT", null, TaskStatus.IN_PROGRESS, Priority.HIGH, null);
         Task saved = Task.builder()
-                .id(1L).title("Estudar JWT").status(TaskStatus.IN_PROGRESS)
+                .id(1L).title("Estudar JWT").status(TaskStatus.IN_PROGRESS).priority(Priority.HIGH)
                 .user(mockUser()).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now())
                 .build();
 
@@ -77,6 +79,7 @@ class TaskServiceTest {
         TaskResponseDTO result = taskService.create(dto, mockUser());
 
         assertEquals(TaskStatus.IN_PROGRESS, result.status());
+        assertEquals(Priority.HIGH, result.priority());
     }
 
     @Test
@@ -129,7 +132,7 @@ class TaskServiceTest {
         when(taskRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.of(task));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        TaskRequestDTO dto = new TaskRequestDTO(null, null, TaskStatus.DONE);
+        TaskRequestDTO dto = new TaskRequestDTO(null, null, TaskStatus.DONE, null, null);
         TaskResponseDTO result = taskService.update(1L, dto, 1L);
 
         assertEquals(TaskStatus.DONE, task.getStatus());
@@ -143,7 +146,7 @@ class TaskServiceTest {
         when(taskRepository.findByIdAndUserId(99L, 1L)).thenReturn(Optional.empty());
 
         assertThrows(TaskNotFoundException.class,
-                () -> taskService.update(99L, new TaskRequestDTO("x", null, null), 1L));
+                () -> taskService.update(99L, new TaskRequestDTO("x", null, null, null, null), 1L));
     }
 
     @Test
