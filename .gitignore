@@ -36,4 +36,5 @@ build/
 .env
 docker-compose.yml
 application.yml
+application-prod.yml
 .env.example
