@@ -7,6 +7,6 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "Task Manager API", version = "1.0", description = "API RESTful de gerenciamento de tarefas com autenticação JWT"))
+@OpenAPIDefinition(info = @Info(title = "TO-DO_LIST API", version = "1.0", description = "API RESTful de gerenciamento de tarefas com autenticação JWT"))
 @SecurityScheme(name = "bearer-key", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
 public class OpenApiConfig {}
